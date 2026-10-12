@@ -1,4 +1,5 @@
 <?php
+#!
 // Start a session so we can remember logged-in users on every page
 session_start();
 
