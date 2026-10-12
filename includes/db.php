@@ -2,6 +2,7 @@
 #!
 // Start a session so we can remember logged-in users on every page
 session_start();
+session_start();
 
 // Try to connect to the database
 try {
