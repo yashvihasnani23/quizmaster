@@ -31,7 +31,7 @@ require_once 'includes/header.php';
             <div class="card-body">
                 <h5>My Attempts</h5>
                 <p class="text-muted">Review your past scores.</p>
-                <a href="quizzes.php" class="btn btn-primary">Browse</a>
+                <a href="attempts.php" class="btn btn-primary">View</a>
             </div>
         </div>
     </div>
