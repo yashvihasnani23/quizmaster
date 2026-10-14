@@ -1,9 +1,9 @@
 <?php
-#!
-// Start a session so we can remember logged-in users on every page
-session_start();
-session_start();
 
+// Start a session so we can remember logged-in users on every page
+ if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+ }
 // Try to connect to the database
 try {
     $pdo = new PDO(
