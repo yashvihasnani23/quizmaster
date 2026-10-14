@@ -22,7 +22,7 @@ require_once 'includes/header.php';
             <div class="card-body">
                 <h5>Create Quiz</h5>
                 <p class="text-muted">Build your own quiz for others.</p>
-                <a href="quizzes.php" class="btn btn-primary">Browse</a>
+                <a href="create_quiz.php" class="btn btn-primary">Create</a>
             </div>
         </div>
     </div>
