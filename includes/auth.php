@@ -17,3 +17,16 @@ function require_admin() {
         die('Access denied.');
     }
 }
+
+// One-time message shown after a redirect
+function flash($type, $message) {
+    $_SESSION['flash'] = [$type, $message];
+}
+
+function show_flash() {
+    if (!empty($_SESSION['flash'])) {
+        [$type, $message] = $_SESSION['flash'];
+        unset($_SESSION['flash']);
+        echo '<div class="alert alert-' . e($type) . '">' . e($message) . '</div>';
+    }
+}

@@ -26,6 +26,9 @@ $base = '/quizmaster/';
             <ul class="navbar-nav ms-auto">
                 <?php if (isset($_SESSION['user_id'])): ?>
                     <!-- Shown when logged in -->
+                    <?php if (($_SESSION['role'] ?? '') === 'admin'): ?>
+                        <li class="nav-item"><a class="nav-link" href="<?= $base ?>admin/index.php">Admin</a></li>
+                    <?php endif; ?>
                     <li class="nav-item"><a class="nav-link" href="<?= $base ?>my_quizzes.php">My Quizzes</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?= $base ?>attempts.php">My Attempts</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?= $base ?>leaderboard.php">Leaderboard</a></li>
