@@ -27,7 +27,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($stmt->fetch()) {
             $error = 'This email is already registered.';
-        } else {
+        } 
+        elseif (strlen($pass) < 8 || strlen($pass) > 72) {
+        $error = 'Password must be between 8 and 72 characters.';
+        }
+        else {
             // 3. Hash the password and save the user
             $hash = password_hash($pass, PASSWORD_DEFAULT);
             $stmt = $pdo->prepare('INSERT INTO users (name, email, password_hash) VALUES (?, ?, ?)');
@@ -37,6 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header('Location: login.php?registered=1');
             exit;
         }
+        
     }
 }
 

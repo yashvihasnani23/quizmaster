@@ -14,23 +14,38 @@ $email = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim($_POST['email'] ?? '');
     $pass  = $_POST['password'] ?? '';
+    $ip    = $_SERVER['REMOTE_ADDR'] ?? '';
 
-    // Look up the user by email
-    $stmt = $pdo->prepare('SELECT * FROM users WHERE email = ?');
+    // Count recent failed attempts for this email and for this IP
+    $stmt = $pdo->prepare('SELECT COUNT(*) FROM login_attempts WHERE email = ? AND attempted_at > (NOW() - INTERVAL 15 MINUTE)');
     $stmt->execute([$email]);
-    $user = $stmt->fetch();
+    $byEmail = (int)$stmt->fetchColumn();
 
-    // Compare the typed password with the stored hash
-    if ($user && password_verify($pass, $user['password_hash'])) {
-        session_regenerate_id(true);   // new session ID prevents session fixation
-        $_SESSION['user_id'] = $user['id'];
-        $_SESSION['name']    = $user['name'];
-        $_SESSION['role']    = $user['role'];
-        header('Location: dashboard.php');
-        exit;
+    $stmt = $pdo->prepare('SELECT COUNT(*) FROM login_attempts WHERE ip = ? AND attempted_at > (NOW() - INTERVAL 15 MINUTE)');
+    $stmt->execute([$ip]);
+    $byIp = (int)$stmt->fetchColumn();
+
+    if ($byEmail >= 5 || $byIp >= 20) {
+        $error = 'Too many failed attempts. Please wait 15 minutes and try again.';
+    } else {
+        $stmt = $pdo->prepare('SELECT * FROM users WHERE email = ?');
+        $stmt->execute([$email]);
+        $user = $stmt->fetch();
+
+        if ($user && password_verify($pass, $user['password_hash'])) {
+            $pdo->prepare('DELETE FROM login_attempts WHERE email = ?')->execute([$email]);
+            session_regenerate_id(true);
+            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['name']    = $user['name'];
+            $_SESSION['role']    = $user['role'];
+            header('Location: dashboard.php');
+            exit;
+        }
+
+        // Record the failure
+        $pdo->prepare('INSERT INTO login_attempts (email, ip) VALUES (?, ?)')->execute([$email, $ip]);
+        $error = 'Invalid email or password.';
     }
-    // Same message for wrong email or wrong password, so attackers can't tell which
-    $error = 'Invalid email or password.';
 }
 
 require_once 'includes/header.php';
