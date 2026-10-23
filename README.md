@@ -69,4 +69,4 @@ Six main tables: `users`, `categories`, `quizzes`, `questions`, `attempts`,
 
 ## Author
 
-[Your name] | [LinkedIn] | [email]
+Yashvi Hasnani 
